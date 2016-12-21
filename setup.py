@@ -4,7 +4,7 @@ from distutils.core import setup
 
 setup(
     name = 'GrooveHQ',
-    author = 'Matt Luongo',
+    author = 'Matt Luongo, Daniel Penney',
     version = '0.1',
     author_email = 'mhluongo@gmail.com',
     packages = ['groovehq'],
