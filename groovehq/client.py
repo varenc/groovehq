@@ -106,3 +106,18 @@ class Groove(object):
 
         if len(nums) > 0:
             return nums[-1]
+
+    def list_customers(self, **kwargs):
+        """
+        Return list of customers
+
+        See https://www.groovehq.com/docs/customers#listing-all-customers for
+        details.
+
+        :param page: page number
+        :params per_page: number of messages to return (default 25, max 50)
+        """
+        params = { k:unicode(v) for k, v in kwargs.items() }
+        resp = self._session.get(self._endpoint+'customers',
+                                 params=params)
+        return resp.json()['customers']
