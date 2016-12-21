@@ -25,6 +25,21 @@ class Groove(object):
         resp = self._session.get(self._endpoint+'folders')
         return resp.json()['folders']
 
+    def folder_count(self, **kwargs):
+        """
+        Return ticket count matching criteria
+
+        See https://www.groovehq.com/docs/ticket-counts#listing-ticket-counts for
+        more details.
+
+        :param mailbox: the email or id of a mailbox
+        """
+
+        params = { k:unicode(v) for k, v in kwargs.items() }
+        resp = self._session.get(self._endpoint+'tickets/count',
+                                 params=params)
+        return resp.json()
+
     def list_tickets(self, **kwargs):
         """
         Return all tickets matching the criteria.
