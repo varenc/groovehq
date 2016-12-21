@@ -10,11 +10,20 @@ class Groove(object):
         self._api_token = api_token
         self._session = requests.Session()
         self._session.headers = self._headers()
+        self._endpoint = 'https://api.groovehq.com/v1/'
 
     def _headers(self):
         return {
             'Authorization': 'Bearer {}'.format(self._api_token),
         }
+
+    def _folder_list(self):
+        """
+        Return dictionary of folder Name -> ID mapping
+        """
+
+        resp = self._session.get(self._endpoint+'folders')
+        return resp.json()['folders']
 
     def list_tickets(self, **kwargs):
         """
@@ -32,7 +41,7 @@ class Groove(object):
         """
 
         params = { k:unicode(v) for k, v in kwargs.items() }
-        resp = self._session.get('https://api.groovehq.com/v1/tickets',
+        resp = self._session.get(self._endpoint+'tickets',
                                  params=params)
         return resp.json()['tickets']
 
@@ -49,7 +58,7 @@ class Groove(object):
         """
         params = { k:unicode(v) for k, v in kwargs.items() }
 
-        url = ('https://api.groovehq.com/v1/tickets/{}/messages'
+        url = (self._endpoint+'tickets/{}/messages'
                .format(ticket_number))
         resp = self._session.get(url, params=params)
         return resp.json()['messages']
@@ -72,7 +81,7 @@ class Groove(object):
             'body': body,
             'note': note
         }
-        url = ('https://api.groovehq.com/v1/tickets/{}/messages'
+        url = (self._endpoint+'tickets/{}/messages'
                .format(ticket_number))
         resp = self._session.post(url, json=data)
 
