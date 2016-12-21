@@ -1,8 +1,6 @@
-__all__ = ('Groove',)
-
 import re
-
 import requests
+
 
 class Groove(object):
 
@@ -29,13 +27,13 @@ class Groove(object):
         """
         Return ticket count matching criteria
 
-        See https://www.groovehq.com/docs/ticket-counts#listing-ticket-counts for
-        more details.
+        See https://www.groovehq.com/docs/ticket-counts#listing-ticket-counts
+        for more details.
 
         :param mailbox: the email or id of a mailbox
         """
 
-        params = { k:unicode(v) for k, v in kwargs.items() }
+        params = {k: unicode(v) for k, v in kwargs.items()}
         resp = self._session.get(self._endpoint+'tickets/count',
                                  params=params)
         return resp.json()
@@ -55,7 +53,7 @@ class Groove(object):
         :param folder: the ID of a folder
         """
 
-        params = { k:unicode(v) for k, v in kwargs.items() }
+        params = {k: unicode(v) for k, v in kwargs.items()}
         resp = self._session.get(self._endpoint+'tickets',
                                  params=params)
         return resp.json()['tickets']
@@ -71,7 +69,7 @@ class Groove(object):
         :param page: the page number
         :param per_page: how many results to return per page, defaults to 25
         """
-        params = { k:unicode(v) for k, v in kwargs.items() }
+        params = {k: unicode(v) for k, v in kwargs.items()}
 
         url = (self._endpoint+'tickets/{}/messages'
                .format(ticket_number))
@@ -117,7 +115,7 @@ class Groove(object):
         :param page: page number
         :params per_page: number of messages to return (default 25, max 50)
         """
-        params = { k:unicode(v) for k, v in kwargs.items() }
+        params = {k: unicode(v) for k, v in kwargs.items()}
         resp = self._session.get(self._endpoint+'customers',
                                  params=params)
         return resp.json()['customers']
