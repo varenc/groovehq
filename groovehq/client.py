@@ -21,11 +21,13 @@ class Groove(object):
                                  params=params)
         return resp.json()[str(action)]
 
-    def list_folders(self):
+    def list_folders(self, **kwargs):
         """
         Return dictionary of folder Name -> ID mapping
+
+        :param mailbox: the email or id of a mailbox to filter by
         """
-        return self._get_resp("folders")
+        return self._get_resp("folders", kwargs)
 
     def folder_count(self, **kwargs):
         """
