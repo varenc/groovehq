@@ -149,11 +149,13 @@ class Groove(object):
         """
         return self._get_resp("mailboxes", "mailboxes")
 
-    def list_attachments(self):
+    def list_attachments(self, **kwargs):
         """
         Return list of all attachments
 
         See https://www.groovehq.com/docs/attachments#listing-attachments for
         more details
+
+        :param message: the id of the message to list attachments for
         """
-        return self._get_resp("attachments", "attachments")
+        return self._get_resp("attachments", "attachments", kwargs)
