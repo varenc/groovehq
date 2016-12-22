@@ -127,3 +127,11 @@ class Groove(object):
         :param group: The ID of a group to filter by
         """
         return self._get_resp("agents", kwargs)
+
+    def list_groups(self):
+        """
+        Return list of groups
+
+        See https://www.groovehq.com/docs/groups#listing-groups for more details
+        """
+        return self._get_resp("groups")
