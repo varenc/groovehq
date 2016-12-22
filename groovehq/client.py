@@ -115,7 +115,7 @@ class Groove(object):
         :param page: page number
         :param per_page: number of messages to return (default 25, max 50)
         """
-        self._get_resp("customers", kwargs)
+        return self._get_resp("customers", kwargs)
 
     def list_agents(self, **kwargs):
         """
@@ -126,4 +126,4 @@ class Groove(object):
 
         :param group: The ID of a group to filter by
         """
-        self._get_resp("agents", kwargs)
+        return self._get_resp("agents", kwargs)
