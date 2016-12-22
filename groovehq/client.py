@@ -15,11 +15,20 @@ class Groove(object):
             'Authorization': 'Bearer {}'.format(self._api_token),
         }
 
-    def _get_resp(self, action, kwargs={}):
+    def _get_resp(self, api_request, key=None, kwargs={}):
+        """
+        Returns GET request decoded JSON response
+
+        :param api_request: ticket/{}/messages
+        :param key: dictionary key to show, defaults to None
+        :param kwargs: optional arguments """
         params = {k: unicode(v) for k, v in kwargs.items()}
-        resp = self._session.get(self._endpoint+str(action),
+        resp = self._session.get(self._endpoint+str(api_request),
                                  params=params)
-        return resp.json()[str(action)]
+        if key is None:
+            return resp.json()
+        else:
+            return resp.json()[str(key)]
 
     def list_folders(self, **kwargs):
         """
@@ -27,9 +36,9 @@ class Groove(object):
 
         :param mailbox: the email or id of a mailbox to filter by
         """
-        return self._get_resp("folders", kwargs)
+        return self._get_resp("folders", "folders", kwargs)
 
-    def folder_count(self, **kwargs):
+    def list_ticket_count(self, **kwargs):
         """
         Return ticket count matching criteria
 
@@ -38,11 +47,7 @@ class Groove(object):
 
         :param mailbox: the email or id of a mailbox
         """
-
-        params = {k: unicode(v) for k, v in kwargs.items()}
-        resp = self._session.get(self._endpoint+'tickets/count',
-                                 params=params)
-        return resp.json()
+        return self._get_resp("tickets/count", None, kwargs)
 
     def list_tickets(self, **kwargs):
         """
@@ -58,9 +63,9 @@ class Groove(object):
         :param state: One of "unread", "opened", "pending", "closed", or "spam"
         :param folder: the ID of a folder
         """
-        return self._get_resp("tickets", kwargs)
+        return self._get_resp("tickets", None, kwargs)
 
-    def get_messages(self, ticket_number, **kwargs):
+    def list_messages(self, ticket_number, **kwargs):
         """
         Get all messages for a particular ticket.
 
@@ -71,12 +76,9 @@ class Groove(object):
         :param page: the page number
         :param per_page: how many results to return per page, defaults to 25
         """
-        params = {k: unicode(v) for k, v in kwargs.items()}
-
-        url = (self._endpoint+'tickets/{}/messages'
-               .format(ticket_number))
-        resp = self._session.get(url, params=params)
-        return resp.json()['messages']
+        return self._get_resp("tickets/{}/messages".format(ticket_number),
+                              None,
+                              kwargs)
 
     def create_message(self, ticket_number, author, body, note=True):
         """
@@ -117,7 +119,7 @@ class Groove(object):
         :param page: page number
         :param per_page: number of messages to return (default 25, max 50)
         """
-        return self._get_resp("customers", kwargs)
+        return self._get_resp("customers", None, kwargs)
 
     def list_agents(self, **kwargs):
         """
@@ -128,7 +130,7 @@ class Groove(object):
 
         :param group: The ID of a group to filter by
         """
-        return self._get_resp("agents", kwargs)
+        return self._get_resp("agents", "agents", kwargs)
 
     def list_groups(self):
         """
@@ -136,4 +138,22 @@ class Groove(object):
 
         See https://www.groovehq.com/docs/groups#listing-groups for more details
         """
-        return self._get_resp("groups")
+        return self._get_resp("groups", "groups")
+
+    def list_mailboxes(self):
+        """
+        Return list of mailboxes
+
+        See https://www.groovehq.com/docs/mailboxes#listing-mailboxes for more
+        details
+        """
+        return self._get_resp("mailboxes", "mailboxes")
+
+    def list_attachments(self):
+        """
+        Return list of all attachments
+
+        See https://www.groovehq.com/docs/attachments#listing-attachments for
+        more details
+        """
+        return self._get_resp("attachments", "attachments")
