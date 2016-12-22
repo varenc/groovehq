@@ -15,13 +15,17 @@ class Groove(object):
             'Authorization': 'Bearer {}'.format(self._api_token),
         }
 
+    def _get_resp(self, action, kwargs={}):
+        params = {k: unicode(v) for k, v in kwargs.items()}
+        resp = self._session.get(self._endpoint+str(action),
+                                 params=params)
+        return resp.json()[str(action)]
+
     def list_folders(self):
         """
         Return dictionary of folder Name -> ID mapping
         """
-
-        resp = self._session.get(self._endpoint+'folders')
-        return resp.json()['folders']
+        return self._get_resp("folders")
 
     def folder_count(self, **kwargs):
         """
@@ -52,11 +56,7 @@ class Groove(object):
         :param state: One of "unread", "opened", "pending", "closed", or "spam"
         :param folder: the ID of a folder
         """
-
-        params = {k: unicode(v) for k, v in kwargs.items()}
-        resp = self._session.get(self._endpoint+'tickets',
-                                 params=params)
-        return resp.json()['tickets']
+        return self._get_resp("tickets", kwargs)
 
     def get_messages(self, ticket_number, **kwargs):
         """
@@ -115,21 +115,15 @@ class Groove(object):
         :param page: page number
         :param per_page: number of messages to return (default 25, max 50)
         """
-        params = {k: unicode(v) for k, v in kwargs.items()}
-        resp = self._session.get(self._endpoint+'customers',
-                                 params=params)
-        return resp.json()['customers']
+        self._get_resp("customers", kwargs)
 
-	def list_agents(self, **kwargs):
-		"""
-		Get list of all agents
+    def list_agents(self, **kwargs):
+        """
+        Get list of all agents
 
-		See https://www.groovehq.com/docs/agents#listing-agents for more
-		details
+        See https://www.groovehq.com/docs/agents#listing-agents for more
+        details
 
-		:param group: The ID of a group to filter by
-		"""
-		params = {k: unicode(v) for k, v in kwargs.items()}
-		resp = self._session.get(self._endpoint+'agents',
-								 params=params)
-		return resp.json()['agents']
+        :param group: The ID of a group to filter by
+        """
+        self._get_resp("agents", kwargs)
