@@ -30,6 +30,39 @@ class Groove(object):
         else:
             return resp.json()[str(key)]
 
+    def create_ticket(self, body, from_user, to_user, note=False, **kwargs):
+        """
+        Create ticket.
+        See https://www.groovehq.com/docs/tickets#listing-tickets for more
+        details.
+        :param body: The body of the first comment to add to the ticket
+        :param from_user:   The email address of the agent or customer who sent the ticket or hash of customer attributes (defined below)
+        :param to_user: The email address of the customer or mailbox that the ticket is addressed to or a hash of customer attributes
+        :param assigned_group: The name of the assigned group
+        :param assignee: The email of the agent to assign the ticket to
+        :param sent_at: Can be used to set the created and updated datetimes to sometime in the past. RFC-822 format preferred
+        :param note: When creating a ticket from an agent, should the message body be added as a private note
+        :param send_copy_to_customer :  When creating a ticket from an agent, should the message be emailed to the customer
+        :param state : The ticket state. Allowed states are: "unread", "opened", "pending", "closed", "spam"
+        :param subject : The email subject of your ticket
+        :param tags :  A list of tag names
+        """
+
+        data = {
+            'body': body,
+            'from': from_user,
+            'to': to_user,
+            'note': note
+        }
+        data.update(kwargs)
+
+        url = self._endpoint + 'tickets'
+
+        resp = self._session.post(url, json=data)
+        res = resp.json()
+
+        return res
+
     def list_folders(self, **kwargs):
         """
         Return dictionary of folder Name -> ID mapping
@@ -102,12 +135,7 @@ class Groove(object):
                .format(ticket_number))
         resp = self._session.post(url, json=data)
 
-        result = resp.json()
-        new_url = ret['message']['href']
-        nums = re.findall(r'\d+', new_url)
-
-        if len(nums) > 0:
-            return nums[-1]
+        return resp.json()
 
     def list_customers(self, **kwargs):
         """
